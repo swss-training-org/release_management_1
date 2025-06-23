@@ -92,7 +92,7 @@ jobs:
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}"
+          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
           body: |
             ✅ Deployment for tag `${{ github.ref_name }}` has been successfully applied to production.
 
