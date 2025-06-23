@@ -156,6 +156,14 @@ jobs:
 
             Thank you for your approval! 🎉
           reactions: '+1'
+      
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        if: ${{ needs.apply-on-approval.result == 'success' }}
+        with:
+          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
+          comment: Auto-closing issue
+          labels: "deployment-completed"
 
       - name: Create comment failure 
         uses: peter-evans/create-or-update-comment@v4
