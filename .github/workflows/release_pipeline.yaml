@@ -5,6 +5,12 @@ on:
     tags:
       - 'prod-v*'
 
+permissions:
+  contents: read
+  issues: write
+  actions: write
+  pull-requests: write
+
 jobs:
   validate-and-plan:
     name: CI Validation & Plan
