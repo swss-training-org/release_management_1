@@ -36,12 +36,38 @@ jobs:
           echo "Categorizing plan..."
           echo "Changes categorized as MINOR (1 modify, 2 add)" > change_summary.txt
 
+      - name: Generate Issue Content from Template
+        run: |
+          echo "📝 Filling deployment issue template"
+          cat <<EOF > filled_issue.md
+          ## 🚀 Production Deployment Request
+
+          ### 📌 Deployment Tag
+          \`${{ github.ref_name }}\`
+
+          ### 📋 Terraform Plan Output
+          \`\`\`
+          $(cat plan_output.txt)
+          \`\`\`
+
+          ### 🧠 Change Categorization
+          \`\`\`
+          $(cat change_summary.txt)
+          \`\`\`
+
+          ### 🧾 Notes
+            - Please review the changes and approve or reject this deployment.
+            - Deployment will proceed only after manual approval.
+          EOF
+
       - name: Create GitHub Issue for Approval
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: "🚀 Deployment Request for Production - ${{ github.ref_name }}"
-          content-filepath: .github/deployment_tempates/deployment-request-template.md
+          content-filepath: filled_issue.md
           labels: "deployment-request, pending-approval"
+          assignees: yaoswisscom
+        
 
   apply-on-approval:
     name: Apply to Production
