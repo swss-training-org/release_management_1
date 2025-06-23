@@ -138,6 +138,8 @@ jobs:
       - run: gh issue edit "$NUMBER" --add-label "$LABELS"
         if: ${{ needs.apply-on-approval.result == 'success' }}
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           NUMBER: ${{ needs.apply-on-approval.result == 'success' }}
           LABELS: deployment-success
 
