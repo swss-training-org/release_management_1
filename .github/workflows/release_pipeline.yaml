@@ -84,10 +84,14 @@ jobs:
     needs: validate-and-plan
     environment:
       name: production
+    outputs:
+      approved: ${{ steps.set-outputs.approved }}
 
     steps:
-      - name: Await Manual Approval
-        run: echo "⏳ Awaiting manual approval via GitHub Environments..."
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "approved=true" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply (Fake)
         run: echo "✅ Terraform Apply simulated"
@@ -109,7 +113,7 @@ jobs:
 
   rejected-notification:
     name: Rejection Handler
-    if: ${{ failure() }}  # Or conditionally on a 'rejected' trigger
+    if: ${{ failure() && (needs.apply-on-approval.result != 'failure' || (needs.apply-on-approval.result == 'failure' && needs.apply-on-approval.outputs.approved == 'true')) }}  # Or conditionally on a 'rejected' trigger
     runs-on: ubuntu-latest
     needs: validate-and-plan
 
