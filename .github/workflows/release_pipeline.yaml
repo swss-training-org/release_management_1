@@ -34,7 +34,7 @@ jobs:
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: "🚀 Deployment Request for Production - ${{ github.ref_name }}"
-          #content-filepath: .github/deployment-request-template.md
+          content-filepath: .github/deployment_tempates/deployment-request-template.md
           labels: "deployment-request, pending-approval"
 
   apply-on-approval:
