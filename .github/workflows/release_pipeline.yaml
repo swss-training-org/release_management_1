@@ -129,9 +129,9 @@ jobs:
           reactions: 'confused'
 
   report-status:
-    name: Debug Job Status
+    name: Report deployment status
     runs-on: ubuntu-latest
-    needs: [apply-on-approval]
+    needs: [apply-on-approval, validate-and-plan]
     if: always()  # Always runs regardless of previous job results
 
     steps:
