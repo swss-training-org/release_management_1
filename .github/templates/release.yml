@@ -1,0 +1,12 @@
+name: Release template
+body: |
+  ## 📦 Release Summary
+
+  Please summarize the changes in this release.
+
+  ## 🧾 PCMS Ticket ID
+  **PCMS Ticket ID:** 
+
+  ## 🔍 Additional Notes
+  - Change impact:
+  - Known issues:
