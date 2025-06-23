@@ -117,7 +117,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
           LABELS: deployment-failed
-          OLD_LABELS: deployment-request, pending-approval
+          OLD_LABELS: deployment-request,pending-approval
 
       - name: Create comment workflow cancel
         uses: peter-evans/create-or-update-comment@v4
@@ -155,7 +155,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
           LABELS: deployment-success
-          OLD_LABELS: deployment-request, pending-approval
+          OLD_LABELS: deployment-request,pending-approval
 
       - name: Close Issue
         uses: peter-evans/close-issue@v3
@@ -173,7 +173,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
           LABELS: deployment-failed
-          OLD_LABELS: deployment-request, pending-approval
+          OLD_LABELS: deployment-request,pending-approval
 
       - name: Create comment failure 
         uses: peter-evans/create-or-update-comment@v4
