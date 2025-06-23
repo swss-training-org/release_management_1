@@ -113,10 +113,10 @@ jobs:
 
   rejected-notification:
     name: Rejection Handler
-    if: ${{ failure() && (needs.apply-on-approval.result != 'failure' || (needs.apply-on-approval.result == 'failure' && needs.apply-on-approval.outputs.approved == 'true')) }}  # Or conditionally on a 'rejected' trigger
+    #if: ${{ failure() && (needs.apply-on-approval.result != 'failure' || (needs.apply-on-approval.result == 'failure' && needs.apply-on-approval.outputs.approved == 'true')) }}  # Or conditionally on a 'rejected' trigger
+    if: ${{ needs.apply-on-approval.result == 'skipped' }}
     runs-on: ubuntu-latest
     needs: validate-and-plan
-
     steps:
       - name: Comment on Rejection
         uses: peter-evans/create-or-update-comment@v4
@@ -127,3 +127,14 @@ jobs:
 
             Please update the code or re-request deployment once issues are addressed.
           reactions: 'confused'
+  debug-status:
+    name: Debug Job Status
+    runs-on: ubuntu-latest
+    needs: [apply-on-approval]
+    if: always()  # Always runs regardless of previous job results
+
+    steps:
+      - name: Output Apply-on-Approval Result
+        run: |
+          echo "Apply-on-approval job result: ${{ needs.apply-on-approval.result }}"
+          echo "Apply-on-approval approved output: ${{ needs.apply-on-approval.outputs.approved }}"
