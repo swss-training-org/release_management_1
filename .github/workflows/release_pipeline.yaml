@@ -140,7 +140,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          NUMBER: ${{ needs.apply-on-approval.result == 'success' }}
+          NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
           LABELS: deployment-success
 
       - name: Close Issue
