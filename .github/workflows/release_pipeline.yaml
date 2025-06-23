@@ -141,7 +141,8 @@ jobs:
         with:
           issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
           comment: Auto-closing issue
-          labels: "deployment-completed"
+          labels: |
+            deployment-completed
 
       - name: Create comment failure 
         uses: peter-evans/create-or-update-comment@v4
