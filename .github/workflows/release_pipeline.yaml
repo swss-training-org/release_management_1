@@ -96,28 +96,6 @@ jobs:
       - name: Terraform Apply (Fake)
         run: echo "✅ Terraform Apply simulated"
 
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
-          body: |
-            ✅ Deployment for tag `${{ github.ref_name }}` has been successfully applied to production.
-
-            ### Summary of Changes
-            - Resources added: 2
-            - Resources modified: 1
-            - Resources deleted: 0
-
-            Thank you for your approval! 🎉
-          reactions: '+1'
-
-      - name: Close Issue
-        uses: peter-evans/close-issue@v3
-        with:
-          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
-          comment: Auto-closing issue
-          labels: "deployment-completed"
-
   report-status:
     name: Report deployment status
     runs-on: ubuntu-latest
