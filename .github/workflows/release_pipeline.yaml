@@ -1,0 +1,65 @@
+name: Production Deployment Request via Tag
+
+on:
+  push:
+    tags:
+      - 'prod-v*'
+
+jobs:
+  validate-and-plan:
+    name: CI Validation & Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Lint Check (Fake)
+        run: echo "✅ Linting completed"
+
+      - name: Security Scan (Fake)
+        run: echo "✅ Security scan completed"
+
+      - name: Terraform Plan (Fake)
+        run: |
+          echo "Simulating Terraform plan..."
+          echo "# Terraform Plan Output\nResource to be added: 2\nResource to be modified: 1\nResource to be deleted: 0" > plan_output.txt
+
+      - name: Categorize Changes (Fake)
+        run: |
+          echo "Categorizing plan..."
+          echo "Changes categorized as MINOR (1 modify, 2 add)" > change_summary.txt
+
+      - name: Create GitHub Issue for Approval
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "🚀 Deployment Request for Production - ${{ github.ref_name }}"
+          #content-filepath: .github/deployment-request-template.md
+          labels: "deployment-request, pending-approval"
+
+  apply-on-approval:
+    name: Apply to Production
+    if: github.event.issue.title == '🚀 Deployment Request for Production - ${{ github.ref_name }}'
+    runs-on: ubuntu-latest
+    needs: validate-and-plan
+    environment:
+      name: production
+      #url: https://prod.example.com
+
+    steps:
+      - name: Await Manual Approval
+        run: echo "⏳ Awaiting manual approval via GitHub Environments..."
+
+      - name: Terraform Apply (Fake)
+        run: echo "✅ Terraform Apply simulated"
+
+      - name: Post-Deployment Success Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "✅ Production deployment for tag `${{ github.ref_name }}` completed successfully."
+            });
