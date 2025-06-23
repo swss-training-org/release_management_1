@@ -107,6 +107,17 @@ jobs:
         run: |
           echo "Apply-on-approval job result: ${{ needs.apply-on-approval.result }}"
           echo "Apply-on-approval approved output: ${{ needs.apply-on-approval.outputs.approved }}"
+      
+      - run: |
+          gh issue edit "$NUMBER" --remove-label "$OLD_LABELS"
+          gh issue edit "$NUMBER" --add-label "$LABELS"
+        if: ${{ needs.apply-on-approval.result == 'skipped' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
+          LABELS: deployment-failed
+          OLD_LABELS: deployment-request, pending-approval
 
       - name: Create comment workflow cancel
         uses: peter-evans/create-or-update-comment@v4
@@ -135,13 +146,16 @@ jobs:
             Thank you for your approval! 🎉
           reactions: '+1'
 
-      - run: gh issue edit "$NUMBER" --add-label "$LABELS"
+      - run: |
+          gh issue edit "$NUMBER" --remove-label "$OLD_LABELS"
+          gh issue edit "$NUMBER" --add-label "$LABELS"
         if: ${{ needs.apply-on-approval.result == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
           LABELS: deployment-success
+          OLD_LABELS: deployment-request, pending-approval
 
       - name: Close Issue
         uses: peter-evans/close-issue@v3
@@ -149,6 +163,17 @@ jobs:
         with:
           issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
           comment: Auto-closing issue
+
+      - run: |
+          gh issue edit "$NUMBER" --remove-label "$OLD_LABELS"
+          gh issue edit "$NUMBER" --add-label "$LABELS"
+        if: ${{ needs.apply-on-approval.result == 'failure' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ needs.validate-and-plan.outputs.issue_number }}
+          LABELS: deployment-failed
+          OLD_LABELS: deployment-request, pending-approval
 
       - name: Create comment failure 
         uses: peter-evans/create-or-update-comment@v4
