@@ -106,3 +106,20 @@ jobs:
 
             Thank you for your approval! 🎉
           reactions: '+1'
+
+  rejected-notification:
+    name: Rejection Handler
+    if: ${{ failure() }}  # Or conditionally on a 'rejected' trigger
+    runs-on: ubuntu-latest
+    needs: validate-and-plan
+
+    steps:
+      - name: Comment on Rejection
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
+          body: |
+            ❌ Deployment for tag `${{ github.ref_name }}` has been **rejected** and will not proceed.
+
+            Please update the code or re-request deployment once issues are addressed.
+          reactions: 'confused'
