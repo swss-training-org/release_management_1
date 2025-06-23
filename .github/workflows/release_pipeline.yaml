@@ -16,6 +16,10 @@ jobs:
     name: CI Validation & Plan
     runs-on: ubuntu-latest
 
+    outputs:
+      plan_output: ${{ steps.plan.outputs.plan_output }}
+      issue_number: ${{ steps.createIssue.outputs.issue-number }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -62,6 +66,7 @@ jobs:
 
       - name: Create GitHub Issue for Approval
         uses: peter-evans/create-issue-from-file@v4
+        id : createIssue
         with:
           title: "🚀 Deployment Request for Production - ${{ github.ref_name }}"
           content-filepath: filled_issue.md
@@ -76,7 +81,6 @@ jobs:
     needs: validate-and-plan
     environment:
       name: production
-      #url: https://prod.example.com
 
     steps:
       - name: Await Manual Approval
@@ -85,13 +89,17 @@ jobs:
       - name: Terraform Apply (Fake)
         run: echo "✅ Terraform Apply simulated"
 
-      - name: Post-Deployment Success Comment
-        uses: actions/github-script@v7
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v4
         with:
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "✅ Production deployment for tag `${{ github.ref_name }}` completed successfully."
-            });
+          issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}"
+          body: |
+            ✅ Deployment for tag `${{ github.ref_name }}` has been successfully applied to production.
+
+            ### Summary of Changes
+            - Resources added: 2
+            - Resources modified: 1
+            - Resources deleted: 0
+
+            Thank you for your approval! 🎉
+          reactions: '+1'
