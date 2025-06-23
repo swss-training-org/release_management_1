@@ -63,7 +63,7 @@ jobs:
             - Please review the changes and approve or reject this deployment.
             - Deployment will proceed only after manual approval.
 
-          ### 🔗 [Approve Production Deployment](https://github.com/${{ github.repository }}/environments/production)
+          ### 🔗 [Approve Production Deployment (Workflow Run Link)](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
           EOF
 
