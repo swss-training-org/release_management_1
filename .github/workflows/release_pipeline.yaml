@@ -134,15 +134,19 @@ jobs:
 
             Thank you for your approval! 🎉
           reactions: '+1'
-      
+
+      - run: gh issue edit "$NUMBER" --add-label "$LABELS"
+        if: ${{ needs.apply-on-approval.result == 'success' }}
+        env:
+          NUMBER: ${{ needs.apply-on-approval.result == 'success' }}
+          LABELS: deployment-success
+
       - name: Close Issue
         uses: peter-evans/close-issue@v3
         if: ${{ needs.apply-on-approval.result == 'success' }}
         with:
           issue-number: ${{ needs.validate-and-plan.outputs.issue_number }}
           comment: Auto-closing issue
-          labels: |
-            deployment-completed
 
       - name: Create comment failure 
         uses: peter-evans/create-or-update-comment@v4
